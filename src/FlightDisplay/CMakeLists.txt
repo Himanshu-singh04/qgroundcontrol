@@ -22,7 +22,6 @@ qt_add_qml_module(FlightDisplayModule
         FlyViewCustomLayer.qml
         FlyViewInsetViewer.qml
         FlyViewInstrumentPanel.qml
-        DockingStationPanel.qml
         FlyViewMap.qml
         FlyViewMissionCompleteDialog.qml
         FlyViewPreFlightChecklistPopup.qml

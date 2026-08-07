@@ -191,15 +191,6 @@ Item {
         property real leftEdgeCenterInset:  leftEdgeTopInset
     }
 
-    DockingStationPanel {
-        id:                     dockPanel
-        anchors.left:           parent.left
-        anchors.leftMargin:     _toolsMargin + parentToolInsets.leftEdgeCenterInset
-        anchors.top:            toolStrip.bottom
-        anchors.topMargin:      _layoutMargin
-        z:                      QGroundControl.zOrderWidgets
-    }
-
     GripperMenu {
         id: gripperOptions
     }
