@@ -38,10 +38,13 @@ target_sources(${CMAKE_PROJECT_NAME}
         VehicleWindFactGroup.h
         VehicleHygrometerFactGroup.cc
         VehicleHygrometerFactGroup.h
+        VehicleDockFactGroup.cc
+        VehicleDockFactGroup.h
 )
 
 # Add JSON files
 set(JSON_FILES
+    DockFact.json
     RPMFact.json
     TemperatureFact.json
     GPSFact.json

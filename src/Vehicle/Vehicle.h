@@ -44,6 +44,7 @@
 #include "VehicleTemperatureFactGroup.h"
 #include "VehicleVibrationFactGroup.h"
 #include "VehicleWindFactGroup.h"
+#include "VehicleDockFactGroup.h"
 #include "GimbalController.h"
 #include "BatteryFactGroupListModel.h"
 #include "EscStatusFactGroupListModel.h"
@@ -269,6 +270,7 @@ public:
     Q_PROPERTY(FactGroup*           hygrometer      READ hygrometerFactGroup        CONSTANT)
     Q_PROPERTY(FactGroup*           generator       READ generatorFactGroup         CONSTANT)
     Q_PROPERTY(FactGroup*           efi             READ efiFactGroup               CONSTANT)
+    Q_PROPERTY(FactGroup*           dock            READ dockFactGroup              CONSTANT)
     Q_PROPERTY(Actuators*           actuators       READ actuators                  CONSTANT)
     Q_PROPERTY(HealthAndArmingCheckReport* healthAndArmingCheckReport READ healthAndArmingCheckReport CONSTANT)
 
@@ -612,6 +614,7 @@ public:
     FactGroup* generatorFactGroup           () { return &_generatorFactGroup; }
     FactGroup* efiFactGroup                 () { return &_efiFactGroup; }
     FactGroup* rpmFactGroup                 () { return &_rpmFactGroup; }
+    FactGroup* dockFactGroup                () { return &_dockFactGroup; }
 
     QmlObjectListModel* batteries           () { return &_batteryFactGroupListModel; }
     QmlObjectListModel* escs                () { return &_escStatusFactGroupListModel; }
@@ -1251,6 +1254,7 @@ private:
     const QString _generatorFactGroupName =          QStringLiteral("generator");
     const QString _efiFactGroupName =                QStringLiteral("efi");
     const QString _rpmFactGroupName =                QStringLiteral("rpm");
+    const QString _dockFactGroupName =               QStringLiteral("dock");
 
     VehicleFactGroup*               _vehicleFactGroup;
     VehicleGPSFactGroup             _gpsFactGroup;
@@ -1268,6 +1272,7 @@ private:
     VehicleGeneratorFactGroup       _generatorFactGroup;
     VehicleEFIFactGroup             _efiFactGroup;
     VehicleRPMFactGroup             _rpmFactGroup;
+    VehicleDockFactGroup            _dockFactGroup;
     TerrainFactGroup                _terrainFactGroup;
 
     // Dynamic FactGroups
