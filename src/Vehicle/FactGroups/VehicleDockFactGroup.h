@@ -23,6 +23,16 @@ class VehicleDockFactGroup : public FactGroup
     Q_PROPERTY(Fact *cell4    READ cell4    CONSTANT)
     Q_PROPERTY(Fact *cell5    READ cell5    CONSTANT)
     Q_PROPERTY(Fact *cell6    READ cell6    CONSTANT)
+    Q_PROPERTY(Fact *ls1      READ ls1      CONSTANT)
+    Q_PROPERTY(Fact *ls2      READ ls2      CONSTANT)
+    Q_PROPERTY(Fact *ls3      READ ls3      CONSTANT)
+    Q_PROPERTY(Fact *ls4      READ ls4      CONSTANT)
+    Q_PROPERTY(Fact *ls5      READ ls5      CONSTANT)
+    Q_PROPERTY(Fact *ls6      READ ls6      CONSTANT)
+    Q_PROPERTY(Fact *slot1    READ slot1    CONSTANT)
+    Q_PROPERTY(Fact *slot2    READ slot2    CONSTANT)
+    Q_PROPERTY(Fact *slot1V   READ slot1V   CONSTANT)
+    Q_PROPERTY(Fact *slot2V   READ slot2V   CONSTANT)
 
 public:
     explicit VehicleDockFactGroup(QObject *parent = nullptr);
@@ -36,6 +46,16 @@ public:
     Fact *cell4()    { return &_cell4Fact; }
     Fact *cell5()    { return &_cell5Fact; }
     Fact *cell6()    { return &_cell6Fact; }
+    Fact *ls1()      { return &_ls1Fact; }
+    Fact *ls2()      { return &_ls2Fact; }
+    Fact *ls3()      { return &_ls3Fact; }
+    Fact *ls4()      { return &_ls4Fact; }
+    Fact *ls5()      { return &_ls5Fact; }
+    Fact *ls6()      { return &_ls6Fact; }
+    Fact *slot1()    { return &_slot1Fact; }
+    Fact *slot2()    { return &_slot2Fact; }
+    Fact *slot1V()   { return &_slot1VFact; }
+    Fact *slot2V()   { return &_slot2VFact; }
 
     // Overrides from FactGroup
     void handleMessage(Vehicle *vehicle, const mavlink_message_t &message) final;
@@ -50,4 +70,14 @@ private:
     Fact _cell4Fact    = Fact(0, QStringLiteral("cell4"),    FactMetaData::valueTypeDouble);
     Fact _cell5Fact    = Fact(0, QStringLiteral("cell5"),    FactMetaData::valueTypeDouble);
     Fact _cell6Fact    = Fact(0, QStringLiteral("cell6"),    FactMetaData::valueTypeDouble);
+    Fact _ls1Fact      = Fact(0, QStringLiteral("ls1"),      FactMetaData::valueTypeInt32);
+    Fact _ls2Fact      = Fact(0, QStringLiteral("ls2"),      FactMetaData::valueTypeInt32);
+    Fact _ls3Fact      = Fact(0, QStringLiteral("ls3"),      FactMetaData::valueTypeInt32);
+    Fact _ls4Fact      = Fact(0, QStringLiteral("ls4"),      FactMetaData::valueTypeInt32);
+    Fact _ls5Fact      = Fact(0, QStringLiteral("ls5"),      FactMetaData::valueTypeInt32);
+    Fact _ls6Fact      = Fact(0, QStringLiteral("ls6"),      FactMetaData::valueTypeInt32);
+    Fact _slot1Fact    = Fact(0, QStringLiteral("slot1"),    FactMetaData::valueTypeInt32);
+    Fact _slot2Fact    = Fact(0, QStringLiteral("slot2"),    FactMetaData::valueTypeInt32);
+    Fact _slot1VFact   = Fact(0, QStringLiteral("slot1V"),   FactMetaData::valueTypeDouble);
+    Fact _slot2VFact   = Fact(0, QStringLiteral("slot2V"),   FactMetaData::valueTypeDouble);
 };

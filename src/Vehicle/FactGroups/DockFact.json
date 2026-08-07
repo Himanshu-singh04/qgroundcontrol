@@ -65,6 +65,60 @@
     "type":             "double",
     "decimalPlaces":    2,
     "units":            "V"
+},
+{
+    "name":             "ls1",
+    "shortDesc": "Limit Switch 1",
+    "type":             "int32"
+},
+{
+    "name":             "ls2",
+    "shortDesc": "Limit Switch 2",
+    "type":             "int32"
+},
+{
+    "name":             "ls3",
+    "shortDesc": "Limit Switch 3",
+    "type":             "int32"
+},
+{
+    "name":             "ls4",
+    "shortDesc": "Limit Switch 4",
+    "type":             "int32"
+},
+{
+    "name":             "ls5",
+    "shortDesc": "Limit Switch 5",
+    "type":             "int32"
+},
+{
+    "name":             "ls6",
+    "shortDesc": "Limit Switch 6",
+    "type":             "int32"
+},
+{
+    "name":             "slot1",
+    "shortDesc": "Slot 1 Presence",
+    "type":             "int32"
+},
+{
+    "name":             "slot2",
+    "shortDesc": "Slot 2 Presence",
+    "type":             "int32"
+},
+{
+    "name":             "slot1V",
+    "shortDesc": "Slot 1 Voltage",
+    "type":             "double",
+    "decimalPlaces":    2,
+    "units":            "V"
+},
+{
+    "name":             "slot2V",
+    "shortDesc": "Slot 2 Voltage",
+    "type":             "double",
+    "decimalPlaces":    2,
+    "units":            "V"
 }
 ]
 }
