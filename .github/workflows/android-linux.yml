@@ -31,7 +31,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build_type: [Release]
+        build_type: [Debug]
         qt_version: [6.8.3]
 
     defaults:
@@ -45,7 +45,7 @@ jobs:
       QT_ANDROID_KEYSTORE_ALIAS: QGCAndroidKeyStore
       QT_ANDROID_KEYSTORE_STORE_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
       QT_ANDROID_KEYSTORE_KEY_PASS: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-      QT_ANDROID_ABIS: ${{ matrix.build_type == 'Release' && 'arm64-v8a;armeabi-v7a' || 'arm64-v8a' }}
+      QT_ANDROID_ABIS: 'arm64-v8a;armeabi-v7a'
 
     steps:
       - name: Checkout repo
@@ -85,7 +85,6 @@ jobs:
       - run: cp ${{ runner.temp }}/build/android-build/*.apk ${{ runner.temp }}/build/${{ env.PACKAGE }}.apk
 
       - name: Upload Build File
-        if: matrix.build_type == 'Release'
         uses: ./.github/actions/upload
         with:
           artifact_name: ${{ env.PACKAGE }}.apk
