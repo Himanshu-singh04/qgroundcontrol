@@ -33,6 +33,7 @@ class VehicleDockFactGroup : public FactGroup
     Q_PROPERTY(Fact *slot2    READ slot2    CONSTANT)
     Q_PROPERTY(Fact *slot1V   READ slot1V   CONSTANT)
     Q_PROPERTY(Fact *slot2V   READ slot2V   CONSTANT)
+    Q_PROPERTY(Fact *slotI    READ slotI    CONSTANT)
 
 public:
     explicit VehicleDockFactGroup(QObject *parent = nullptr);
@@ -56,6 +57,7 @@ public:
     Fact *slot2()    { return &_slot2Fact; }
     Fact *slot1V()   { return &_slot1VFact; }
     Fact *slot2V()   { return &_slot2VFact; }
+    Fact *slotI()    { return &_slotIFact; }
 
     // Overrides from FactGroup
     void handleMessage(Vehicle *vehicle, const mavlink_message_t &message) final;
@@ -80,4 +82,5 @@ private:
     Fact _slot2Fact    = Fact(0, QStringLiteral("slot2"),    FactMetaData::valueTypeInt32);
     Fact _slot1VFact   = Fact(0, QStringLiteral("slot1V"),   FactMetaData::valueTypeDouble);
     Fact _slot2VFact   = Fact(0, QStringLiteral("slot2V"),   FactMetaData::valueTypeDouble);
+    Fact _slotIFact    = Fact(0, QStringLiteral("slotI"),    FactMetaData::valueTypeDouble);
 };

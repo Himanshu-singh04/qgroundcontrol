@@ -119,6 +119,13 @@
     "type":             "double",
     "decimalPlaces":    2,
     "units":            "V"
+},
+{
+    "name":             "slotI",
+    "shortDesc": "Slot Current",
+    "type":             "double",
+    "decimalPlaces":    2,
+    "units":            "A"
 }
 ]
 }

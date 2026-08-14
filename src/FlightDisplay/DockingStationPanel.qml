@@ -17,8 +17,8 @@ import QGroundControl.FactControls
 
 Rectangle {
     id:             control
-    implicitWidth:  ScreenTools.defaultFontPixelWidth * 23
-    implicitHeight: mainLayout.implicitHeight + (ScreenTools.defaultFontPixelHeight * 1.0)
+    width:          mainLayout.width + (ScreenTools.defaultFontPixelWidth * 1.0)
+    height:         mainLayout.height + (ScreenTools.defaultFontPixelHeight * 1.0)
     color:          qgcPal.window
     radius:         ScreenTools.defaultFontPixelHeight / 2
     opacity:        0.92
@@ -96,9 +96,12 @@ Rectangle {
 
     ColumnLayout {
         id:                 mainLayout
-        anchors.fill:       parent
-        anchors.margins:    ScreenTools.defaultFontPixelHeight * 0.5
-        spacing:            ScreenTools.defaultFontPixelHeight * 0.4
+        anchors.top:        parent.top
+        anchors.topMargin:  ScreenTools.defaultFontPixelHeight * 0.5
+        anchors.left:       parent.left
+        anchors.leftMargin: ScreenTools.defaultFontPixelWidth * 0.5
+        width:              ScreenTools.defaultFontPixelWidth * 16
+        spacing:            ScreenTools.defaultFontPixelHeight * 0.3
 
         // ==========================================
         // HEADER
@@ -108,26 +111,25 @@ Rectangle {
             spacing:            ScreenTools.defaultFontPixelWidth * 0.5
 
             Rectangle {
-                width:          6
-                height:         12
-                radius:         2
+                width:          4
+                height:         10
+                radius:         1
                 color:          qgcPal.brandBlue
             }
 
             QGCLabel {
-                text:           qsTr("DOCKING STATION")
+                text:           qsTr("DOCK STATUS")
                 font.bold:      true
-                font.pointSize: ScreenTools.defaultFontPointSize
+                font.pointSize: ScreenTools.defaultFontPointSize - 1
                 color:          qgcPal.text
             }
 
             Item { Layout.fillWidth: true }
 
-            // Small connection status
             QGCLabel {
                 text:           qsTr("ONLINE")
                 font.bold:      true
-                font.pointSize: ScreenTools.smallFontPointSize - 1
+                font.pointSize: ScreenTools.smallFontPointSize - 2
                 color:          "#2ecc71"
             }
         }
@@ -144,51 +146,51 @@ Rectangle {
         GridLayout {
             columns:            3
             Layout.fillWidth:   true
-            columnSpacing:      ScreenTools.defaultFontPixelWidth * 0.5
+            columnSpacing:      ScreenTools.defaultFontPixelWidth * 0.25
             rowSpacing:         0
 
             // Volt
             ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing:          1
+                spacing:          0
                 QGCLabel {
                     text:             qsTr("Voltage")
-                    font.pointSize:   ScreenTools.smallFontPointSize - 1
+                    font.pointSize:   ScreenTools.smallFontPointSize - 2
                     color:            qgcPal.textMuted
                     Layout.alignment: Qt.AlignHCenter
                 }
                 QGCLabel {
                     text:             _activeVehicle && _activeVehicle.dock ? (_activeVehicle.dock.dockVolt.valueString + " V") : "N/A"
                     font.bold:        true
-                    font.pointSize:   ScreenTools.defaultFontPointSize
+                    font.pointSize:   ScreenTools.smallFontPointSize
                     Layout.alignment: Qt.AlignHCenter
                 }
             }
 
-            // Current (with Blinking LED indicator)
+            // Current
             ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing:          1
+                spacing:          0
                 QGCLabel {
                     text:             qsTr("Current")
-                    font.pointSize:   ScreenTools.smallFontPointSize - 1
+                    font.pointSize:   ScreenTools.smallFontPointSize - 2
                     color:            qgcPal.textMuted
                     Layout.alignment: Qt.AlignHCenter
                 }
                 RowLayout {
-                    spacing:          4
+                    spacing:          2
                     Layout.alignment: Qt.AlignHCenter
 
                     Rectangle {
                         id:             currentIndicator
-                        width:          8
-                        height:         8
-                        radius:         4
+                        width:          6
+                        height:         6
+                        radius:         3
                         color: {
                             if (!_activeVehicle || !_activeVehicle.dock) return "#7f8c8d"
                             var curr = _activeVehicle.dock.dockCurr.rawValue
-                            if (curr > 0.05) return "#2ecc71" // Green for positive current
-                            if (curr < -0.05) return "#3498db" // Blue for negative current
+                            if (curr > 0.05) return "#2ecc71"
+                            if (curr < -0.05) return "#3498db"
                             return "#7f8c8d"
                         }
                         
@@ -214,7 +216,7 @@ Rectangle {
                     QGCLabel {
                         text:             _activeVehicle && _activeVehicle.dock ? (_activeVehicle.dock.dockCurr.valueString + " A") : "N/A"
                         font.bold:        true
-                        font.pointSize:   ScreenTools.defaultFontPointSize
+                        font.pointSize:   ScreenTools.smallFontPointSize
                     }
                 }
             }
@@ -222,24 +224,24 @@ Rectangle {
             // Temp
             ColumnLayout {
                 Layout.alignment: Qt.AlignHCenter
-                spacing:          1
+                spacing:          0
                 QGCLabel {
                     text:             qsTr("Temp")
-                    font.pointSize:   ScreenTools.smallFontPointSize - 1
+                    font.pointSize:   ScreenTools.smallFontPointSize - 2
                     color:            qgcPal.textMuted
                     Layout.alignment: Qt.AlignHCenter
                 }
                 QGCLabel {
                     text:             _activeVehicle && _activeVehicle.dock ? (_activeVehicle.dock.dockTemp.valueString + "°C") : "N/A"
                     font.bold:        true
-                    font.pointSize:   ScreenTools.defaultFontPointSize
+                    font.pointSize:   ScreenTools.smallFontPointSize
                     Layout.alignment: Qt.AlignHCenter
                 }
             }
         }
 
         // ==========================================
-        // SLOTS STATUS (Compact)
+        // SLOTS STATUS (Charging Slots)
         // ==========================================
         Rectangle {
             Layout.fillWidth:   true
@@ -247,43 +249,65 @@ Rectangle {
             color:              qgcPal.windowShade
         }
 
-        RowLayout {
+        ColumnLayout {
             Layout.fillWidth:   true
-            spacing:            ScreenTools.defaultFontPixelWidth * 1.5
+            spacing:            ScreenTools.defaultFontPixelHeight * 0.15
 
-            // Slot 1
             RowLayout {
-                spacing: 4
-                Layout.fillWidth: true
-                QGCLabel {
-                    text: "S1:"
-                    font.pointSize: ScreenTools.smallFontPointSize
-                    color: qgcPal.textMuted
+                Layout.fillWidth:   true
+                spacing:            ScreenTools.defaultFontPixelWidth * 0.5
+
+                // Slot 1
+                RowLayout {
+                    spacing: 2
+                    Layout.fillWidth: true
+                    QGCLabel {
+                        text: "S1:"
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
+                        color: qgcPal.textMuted
+                    }
+                    QGCLabel {
+                        text: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1 ?
+                                  (_activeVehicle.dock.slot1V.valueString + "V") : qsTr("Empty")
+                        font.bold: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
+                        color: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1 ? qgcPal.text : qgcPal.textMuted
+                    }
                 }
-                QGCLabel {
-                    text: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1 ?
-                              (_activeVehicle.dock.slot1V.valueString + " V") : qsTr("Empty")
-                    font.bold: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1
-                    font.pointSize: ScreenTools.smallFontPointSize
-                    color: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1 ? qgcPal.text : qgcPal.textMuted
+
+                // Slot 2
+                RowLayout {
+                    spacing: 2
+                    Layout.fillWidth: true
+                    QGCLabel {
+                        text: "S2:"
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
+                        color: qgcPal.textMuted
+                    }
+                    QGCLabel {
+                        text: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1 ?
+                                  (_activeVehicle.dock.slot2V.valueString + "V") : qsTr("Empty")
+                        font.bold: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
+                        color: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1 ? qgcPal.text : qgcPal.textMuted
+                    }
                 }
             }
 
-            // Slot 2
+            // Slot Current (SLOT_I)
             RowLayout {
-                spacing: 4
-                Layout.fillWidth: true
+                Layout.fillWidth:   true
+                spacing:            4
                 QGCLabel {
-                    text: "S2:"
-                    font.pointSize: ScreenTools.smallFontPointSize
-                    color: qgcPal.textMuted
+                    text:           qsTr("Slot Current:")
+                    font.pointSize: ScreenTools.smallFontPointSize - 1
+                    color:          qgcPal.textMuted
                 }
                 QGCLabel {
-                    text: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1 ?
-                              (_activeVehicle.dock.slot2V.valueString + " V") : qsTr("Empty")
-                    font.bold: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1
-                    font.pointSize: ScreenTools.smallFontPointSize
-                    color: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1 ? qgcPal.text : qgcPal.textMuted
+                    text:           _activeVehicle && _activeVehicle.dock ? (_activeVehicle.dock.slotI.valueString + " A") : "N/A"
+                    font.bold:      true
+                    font.pointSize: ScreenTools.smallFontPointSize - 1
+                    color:          qgcPal.text
                 }
             }
         }
@@ -299,7 +323,7 @@ Rectangle {
 
         ColumnLayout {
             Layout.fillWidth:   true
-            spacing:            ScreenTools.defaultFontPixelHeight * 0.25
+            spacing:            ScreenTools.defaultFontPixelHeight * 0.15
 
             // Collapsible Header
             QGCMouseArea {
@@ -316,7 +340,7 @@ Rectangle {
                     QGCLabel {
                         text:           qsTr("System Status")
                         font.bold:      true
-                        font.pointSize: ScreenTools.smallFontPointSize
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
                         color:          qgcPal.textMuted
                     }
 
@@ -334,24 +358,24 @@ Rectangle {
             ColumnLayout {
                 Layout.fillWidth:   true
                 visible:            control.statusExpanded
-                spacing:            ScreenTools.defaultFontPixelHeight * 0.3
-                Layout.topMargin:   ScreenTools.defaultFontPixelHeight * 0.2
+                spacing:            ScreenTools.defaultFontPixelHeight * 0.25
+                Layout.topMargin:   ScreenTools.defaultFontPixelHeight * 0.15
 
                 // Locking Arm
                 RowLayout {
                     Layout.fillWidth: true
                     QGCLabel {
                         text:           qsTr("Locking Arm")
-                        font.pointSize: ScreenTools.defaultFontPointSize - 1
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
                     }
                     Item { Layout.fillWidth: true }
                     Rectangle {
-                        radius:         4
+                        radius:         3
                         color:          Qt.rgba(armColor.r, armColor.g, armColor.b, 0.15)
                         border.color:   armColor
                         border.width:   1
-                        implicitWidth:  ScreenTools.defaultFontPixelWidth * 7
-                        implicitHeight: ScreenTools.defaultFontPixelHeight * 1.1
+                        implicitWidth:  ScreenTools.defaultFontPixelWidth * 4.5
+                        implicitHeight: ScreenTools.defaultFontPixelHeight * 0.95
 
                         property color armColor: _activeVehicle && _activeVehicle.dock ?
                                                      getArmColor(_activeVehicle.dock.ls1.rawValue, _activeVehicle.dock.ls2.rawValue) : "#7f8c8d"
@@ -360,7 +384,7 @@ Rectangle {
                             anchors.centerIn: parent
                             text:             _activeVehicle && _activeVehicle.dock ?
                                                   getArmText(_activeVehicle.dock.ls1.rawValue, _activeVehicle.dock.ls2.rawValue) : "N/A"
-                            font.pointSize:   ScreenTools.smallFontPointSize - 1
+                            font.pointSize:   ScreenTools.smallFontPointSize - 2
                             font.bold:        true
                             color:            parent.armColor
                         }
@@ -372,16 +396,16 @@ Rectangle {
                     Layout.fillWidth: true
                     QGCLabel {
                         text:           qsTr("Elevator")
-                        font.pointSize: ScreenTools.defaultFontPointSize - 1
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
                     }
                     Item { Layout.fillWidth: true }
                     Rectangle {
-                        radius:         4
+                        radius:         3
                         color:          Qt.rgba(elevColor.r, elevColor.g, elevColor.b, 0.15)
                         border.color:   elevColor
                         border.width:   1
-                        implicitWidth:  ScreenTools.defaultFontPixelWidth * 7
-                        implicitHeight: ScreenTools.defaultFontPixelHeight * 1.1
+                        implicitWidth:  ScreenTools.defaultFontPixelWidth * 4.5
+                        implicitHeight: ScreenTools.defaultFontPixelHeight * 0.95
 
                         property color elevColor: _activeVehicle && _activeVehicle.dock ?
                                                       getElevatorColor(_activeVehicle.dock.ls3.rawValue, _activeVehicle.dock.ls4.rawValue) : "#7f8c8d"
@@ -390,7 +414,7 @@ Rectangle {
                             anchors.centerIn: parent
                             text:             _activeVehicle && _activeVehicle.dock ?
                                                   getElevatorText(_activeVehicle.dock.ls3.rawValue, _activeVehicle.dock.ls4.rawValue) : "N/A"
-                            font.pointSize:   ScreenTools.smallFontPointSize - 1
+                            font.pointSize:   ScreenTools.smallFontPointSize - 2
                             font.bold:        true
                             color:            parent.elevColor
                         }
@@ -402,16 +426,16 @@ Rectangle {
                     Layout.fillWidth: true
                     QGCLabel {
                         text:           qsTr("Lid")
-                        font.pointSize: ScreenTools.defaultFontPointSize - 1
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
                     }
                     Item { Layout.fillWidth: true }
                     Rectangle {
-                        radius:         4
+                        radius:         3
                         color:          Qt.rgba(lidColor.r, lidColor.g, lidColor.b, 0.15)
                         border.color:   lidColor
                         border.width:   1
-                        implicitWidth:  ScreenTools.defaultFontPixelWidth * 7
-                        implicitHeight: ScreenTools.defaultFontPixelHeight * 1.1
+                        implicitWidth:  ScreenTools.defaultFontPixelWidth * 4.5
+                        implicitHeight: ScreenTools.defaultFontPixelHeight * 0.95
 
                         property color lidColor: _activeVehicle && _activeVehicle.dock ?
                                                      getLidColor(_activeVehicle.dock.ls5.rawValue, _activeVehicle.dock.ls6.rawValue) : "#7f8c8d"
@@ -420,7 +444,7 @@ Rectangle {
                             anchors.centerIn: parent
                             text:             _activeVehicle && _activeVehicle.dock ?
                                                   getLidText(_activeVehicle.dock.ls5.rawValue, _activeVehicle.dock.ls6.rawValue) : "N/A"
-                            font.pointSize:   ScreenTools.smallFontPointSize - 1
+                            font.pointSize:   ScreenTools.smallFontPointSize - 2
                             font.bold:        true
                             color:            parent.lidColor
                         }
@@ -440,7 +464,7 @@ Rectangle {
 
         ColumnLayout {
             Layout.fillWidth:   true
-            spacing:            ScreenTools.defaultFontPixelHeight * 0.25
+            spacing:            ScreenTools.defaultFontPixelHeight * 0.15
 
             // Collapsible Header
             QGCMouseArea {
@@ -457,7 +481,7 @@ Rectangle {
                     QGCLabel {
                         text:           qsTr("Cell Voltages")
                         font.bold:      true
-                        font.pointSize: ScreenTools.smallFontPointSize
+                        font.pointSize: ScreenTools.smallFontPointSize - 1
                         color:          qgcPal.textMuted
                     }
 
@@ -471,14 +495,14 @@ Rectangle {
                 }
             }
 
-            // Expanded content (Cell voltages 3-column compact grid)
+            // Expanded content (Cell voltages compact grid)
             GridLayout {
                 columns:            3
                 Layout.fillWidth:   true
-                columnSpacing:      ScreenTools.defaultFontPixelWidth * 1.0
-                rowSpacing:         ScreenTools.defaultFontPixelHeight * 0.25
+                columnSpacing:      ScreenTools.defaultFontPixelWidth * 0.5
+                rowSpacing:         ScreenTools.defaultFontPixelHeight * 0.15
                 visible:            control.cellsExpanded
-                Layout.topMargin:   ScreenTools.defaultFontPixelHeight * 0.2
+                Layout.topMargin:   ScreenTools.defaultFontPixelHeight * 0.15
 
                 Repeater {
                     model: [
@@ -491,15 +515,15 @@ Rectangle {
                     ]
 
                     delegate: RowLayout {
-                        spacing: 4
+                        spacing: 2
                         QGCLabel {
                             text:             modelData.name
-                            font.pointSize:   ScreenTools.smallFontPointSize - 1
+                            font.pointSize:   ScreenTools.smallFontPointSize - 2
                             color:            qgcPal.textMuted
                         }
                         QGCLabel {
                             text:             modelData.fact ? (modelData.fact.valueString + "V") : "N/A"
-                            font.pointSize:   ScreenTools.smallFontPointSize
+                            font.pointSize:   ScreenTools.smallFontPointSize - 1
                             color:            qgcPal.text
                         }
                     }

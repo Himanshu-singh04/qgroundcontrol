@@ -32,6 +32,7 @@ VehicleDockFactGroup::VehicleDockFactGroup(QObject *parent)
     _addFact(&_slot2Fact);
     _addFact(&_slot1VFact);
     _addFact(&_slot2VFact);
+    _addFact(&_slotIFact);
 
     _dockVoltFact.setRawValue(qQNaN());
     _dockCurrFact.setRawValue(qQNaN());
@@ -52,6 +53,7 @@ VehicleDockFactGroup::VehicleDockFactGroup(QObject *parent)
     _slot2Fact.setRawValue(0);
     _slot1VFact.setRawValue(qQNaN());
     _slot2VFact.setRawValue(qQNaN());
+    _slotIFact.setRawValue(qQNaN());
 }
 
 void VehicleDockFactGroup::handleMessage(Vehicle *vehicle, const mavlink_message_t &message)
@@ -129,6 +131,9 @@ void VehicleDockFactGroup::handleMessage(Vehicle *vehicle, const mavlink_message
         parsed = true;
     } else if (name == QStringLiteral("SLOT2_V")) {
         slot2V()->setRawValue(value.value);
+        parsed = true;
+    } else if (name == QStringLiteral("SLOT_I")) {
+        slotI()->setRawValue(value.value);
         parsed = true;
     }
 
