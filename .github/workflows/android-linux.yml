@@ -58,6 +58,14 @@ jobs:
       - name: Initial Setup
         uses: ./.github/actions/common
 
+      - name: Setup Caching
+        uses: ./.github/actions/cache
+        with:
+          host: linux
+          target: android
+          build-type: ${{ matrix.build_type }}
+          cpm-modules: ${{ runner.temp }}/build/cpm_modules
+
       - name: Install Qt for Android
         uses: ./.github/actions/qt-android
         with:
