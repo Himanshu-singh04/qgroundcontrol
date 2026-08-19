@@ -10,6 +10,8 @@
 #pragma once
 
 #include "FactGroup.h"
+#include <QElapsedTimer>
+#include <QTimer>
 
 class VehicleDockFactGroup : public FactGroup
 {
@@ -34,6 +36,8 @@ class VehicleDockFactGroup : public FactGroup
     Q_PROPERTY(Fact *slot1V   READ slot1V   CONSTANT)
     Q_PROPERTY(Fact *slot2V   READ slot2V   CONSTANT)
     Q_PROPERTY(Fact *slotI    READ slotI    CONSTANT)
+    
+    Q_PROPERTY(bool  online   READ online   NOTIFY onlineChanged)
 
 public:
     explicit VehicleDockFactGroup(QObject *parent = nullptr);
@@ -59,8 +63,16 @@ public:
     Fact *slot2V()   { return &_slot2VFact; }
     Fact *slotI()    { return &_slotIFact; }
 
+    bool online() const { return _online; }
+
     // Overrides from FactGroup
     void handleMessage(Vehicle *vehicle, const mavlink_message_t &message) final;
+
+signals:
+    void onlineChanged(bool online);
+
+private slots:
+    void _checkOnlineStatus();
 
 private:
     Fact _dockVoltFact = Fact(0, QStringLiteral("dockVolt"), FactMetaData::valueTypeDouble);
@@ -83,4 +95,8 @@ private:
     Fact _slot1VFact   = Fact(0, QStringLiteral("slot1V"),   FactMetaData::valueTypeDouble);
     Fact _slot2VFact   = Fact(0, QStringLiteral("slot2V"),   FactMetaData::valueTypeDouble);
     Fact _slotIFact    = Fact(0, QStringLiteral("slotI"),    FactMetaData::valueTypeDouble);
+
+    bool          _online = false;
+    QElapsedTimer _lastReceivedTimer;
+    QTimer        _updateTimer;
 };

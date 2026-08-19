@@ -27,6 +27,7 @@ Rectangle {
 
     property var    _activeVehicle: QGroundControl.multiVehicleManager.activeVehicle
     property bool   _hasTelemetry:  _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.telemetryAvailable
+    property bool   _isOnline:      _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.online
 
     // Collapsible section state variables (collapsed by default)
     property bool   statusExpanded: false
@@ -57,6 +58,7 @@ Rectangle {
     }
 
     function getArmColor(ls1, ls2) {
+        if (!_isOnline) return "#7f8c8d" // Grey if offline
         var state = getSystemState(ls1, ls2)
         if (state === "Active") return "#e67e22" // Orange
         if (state === "Inactive") return "#2ecc71" // Green
@@ -72,6 +74,7 @@ Rectangle {
     }
 
     function getElevatorColor(ls3, ls4) {
+        if (!_isOnline) return "#7f8c8d"
         var state = getSystemState(ls3, ls4)
         if (state === "Active") return "#2ecc71" // Green
         if (state === "Inactive") return "#e67e22" // Orange
@@ -87,6 +90,7 @@ Rectangle {
     }
 
     function getLidColor(ls5, ls6) {
+        if (!_isOnline) return "#7f8c8d"
         var state = getSystemState(ls5, ls6)
         if (state === "Active") return "#e67e22" // Orange
         if (state === "Inactive") return "#2ecc71" // Green
@@ -114,23 +118,23 @@ Rectangle {
                 width:          4
                 height:         10
                 radius:         1
-                color:          qgcPal.brandBlue
+                color:          _isOnline ? qgcPal.brandBlue : qgcPal.textMuted
             }
 
             QGCLabel {
                 text:           qsTr("DOCK STATUS")
                 font.bold:      true
                 font.pointSize: ScreenTools.defaultFontPointSize - 1
-                color:          qgcPal.text
+                color:          _isOnline ? qgcPal.text : qgcPal.textMuted
             }
 
             Item { Layout.fillWidth: true }
 
             QGCLabel {
-                text:           qsTr("ONLINE")
+                text:           _isOnline ? qsTr("ONLINE") : qsTr("OFFLINE")
                 font.bold:      true
                 font.pointSize: ScreenTools.smallFontPointSize - 2
-                color:          "#2ecc71"
+                color:          _isOnline ? "#2ecc71" : "#e74c3c"
             }
         }
 
@@ -163,6 +167,7 @@ Rectangle {
                     text:             _activeVehicle && _activeVehicle.dock ? (_activeVehicle.dock.dockVolt.valueString + " V") : "N/A"
                     font.bold:        true
                     font.pointSize:   ScreenTools.smallFontPointSize
+                    color:            _isOnline ? qgcPal.text : qgcPal.textMuted
                     Layout.alignment: Qt.AlignHCenter
                 }
             }
@@ -187,7 +192,7 @@ Rectangle {
                         height:         6
                         radius:         3
                         color: {
-                            if (!_activeVehicle || !_activeVehicle.dock) return "#7f8c8d"
+                            if (!_isOnline || !_activeVehicle || !_activeVehicle.dock) return "#7f8c8d"
                             var curr = _activeVehicle.dock.dockCurr.rawValue
                             if (curr > 0.05) return "#2ecc71"
                             if (curr < -0.05) return "#3498db"
@@ -197,7 +202,7 @@ Rectangle {
                         opacity:        1.0
                         
                         Timer {
-                            running:    _activeVehicle && _activeVehicle.dock && Math.abs(_activeVehicle.dock.dockCurr.rawValue) > 0.05
+                            running:    _isOnline && _activeVehicle && _activeVehicle.dock && Math.abs(_activeVehicle.dock.dockCurr.rawValue) > 0.05
                             repeat:     true
                             interval:   800
                             onTriggered: {
@@ -217,6 +222,7 @@ Rectangle {
                         text:             _activeVehicle && _activeVehicle.dock ? (_activeVehicle.dock.dockCurr.valueString + " A") : "N/A"
                         font.bold:        true
                         font.pointSize:   ScreenTools.smallFontPointSize
+                        color:            _isOnline ? qgcPal.text : qgcPal.textMuted
                     }
                 }
             }
@@ -235,6 +241,7 @@ Rectangle {
                     text:             _activeVehicle && _activeVehicle.dock ? (_activeVehicle.dock.dockTemp.valueString + "°C") : "N/A"
                     font.bold:        true
                     font.pointSize:   ScreenTools.smallFontPointSize
+                    color:            _isOnline ? qgcPal.text : qgcPal.textMuted
                     Layout.alignment: Qt.AlignHCenter
                 }
             }
@@ -271,7 +278,7 @@ Rectangle {
                                   (_activeVehicle.dock.slot1V.valueString + "V") : qsTr("Empty")
                         font.bold: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1
                         font.pointSize: ScreenTools.smallFontPointSize - 1
-                        color: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1 ? qgcPal.text : qgcPal.textMuted
+                        color: !_isOnline ? qgcPal.textMuted : (_activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot1.rawValue === 1 ? qgcPal.text : qgcPal.textMuted)
                     }
                 }
 
@@ -289,7 +296,7 @@ Rectangle {
                                   (_activeVehicle.dock.slot2V.valueString + "V") : qsTr("Empty")
                         font.bold: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1
                         font.pointSize: ScreenTools.smallFontPointSize - 1
-                        color: _activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1 ? qgcPal.text : qgcPal.textMuted
+                        color: !_isOnline ? qgcPal.textMuted : (_activeVehicle && _activeVehicle.dock && _activeVehicle.dock.slot2.rawValue === 1 ? qgcPal.text : qgcPal.textMuted)
                     }
                 }
             }
@@ -307,7 +314,7 @@ Rectangle {
                     text:           _activeVehicle && _activeVehicle.dock ? (_activeVehicle.dock.slotI.valueString + " A") : "N/A"
                     font.bold:      true
                     font.pointSize: ScreenTools.smallFontPointSize - 1
-                    color:          qgcPal.text
+                    color:          _isOnline ? qgcPal.text : qgcPal.textMuted
                 }
             }
         }
@@ -367,6 +374,7 @@ Rectangle {
                     QGCLabel {
                         text:           qsTr("Locking Arm")
                         font.pointSize: ScreenTools.smallFontPointSize - 1
+                        color:          _isOnline ? qgcPal.text : qgcPal.textMuted
                     }
                     Item { Layout.fillWidth: true }
                     Rectangle {
@@ -377,12 +385,12 @@ Rectangle {
                         implicitWidth:  ScreenTools.defaultFontPixelWidth * 4.5
                         implicitHeight: ScreenTools.defaultFontPixelHeight * 0.95
 
-                        property color armColor: _activeVehicle && _activeVehicle.dock ?
-                                                     getArmColor(_activeVehicle.dock.ls1.rawValue, _activeVehicle.dock.ls2.rawValue) : "#7f8c8d"
+                        property color armColor: getArmColor(_activeVehicle && _activeVehicle.dock ? _activeVehicle.dock.ls1.rawValue : 0,
+                                                             _activeVehicle && _activeVehicle.dock ? _activeVehicle.dock.ls2.rawValue : 0)
 
                         QGCLabel {
                             anchors.centerIn: parent
-                            text:             _activeVehicle && _activeVehicle.dock ?
+                            text:             _isOnline && _activeVehicle && _activeVehicle.dock ?
                                                   getArmText(_activeVehicle.dock.ls1.rawValue, _activeVehicle.dock.ls2.rawValue) : "N/A"
                             font.pointSize:   ScreenTools.smallFontPointSize - 2
                             font.bold:        true
@@ -397,6 +405,7 @@ Rectangle {
                     QGCLabel {
                         text:           qsTr("Elevator")
                         font.pointSize: ScreenTools.smallFontPointSize - 1
+                        color:          _isOnline ? qgcPal.text : qgcPal.textMuted
                     }
                     Item { Layout.fillWidth: true }
                     Rectangle {
@@ -407,12 +416,12 @@ Rectangle {
                         implicitWidth:  ScreenTools.defaultFontPixelWidth * 4.5
                         implicitHeight: ScreenTools.defaultFontPixelHeight * 0.95
 
-                        property color elevColor: _activeVehicle && _activeVehicle.dock ?
-                                                      getElevatorColor(_activeVehicle.dock.ls3.rawValue, _activeVehicle.dock.ls4.rawValue) : "#7f8c8d"
+                        property color elevColor: getElevatorColor(_activeVehicle && _activeVehicle.dock ? _activeVehicle.dock.ls3.rawValue : 0,
+                                                                   _activeVehicle && _activeVehicle.dock ? _activeVehicle.dock.ls4.rawValue : 0)
 
                         QGCLabel {
                             anchors.centerIn: parent
-                            text:             _activeVehicle && _activeVehicle.dock ?
+                            text:             _isOnline && _activeVehicle && _activeVehicle.dock ?
                                                   getElevatorText(_activeVehicle.dock.ls3.rawValue, _activeVehicle.dock.ls4.rawValue) : "N/A"
                             font.pointSize:   ScreenTools.smallFontPointSize - 2
                             font.bold:        true
@@ -427,6 +436,7 @@ Rectangle {
                     QGCLabel {
                         text:           qsTr("Lid")
                         font.pointSize: ScreenTools.smallFontPointSize - 1
+                        color:          _isOnline ? qgcPal.text : qgcPal.textMuted
                     }
                     Item { Layout.fillWidth: true }
                     Rectangle {
@@ -437,12 +447,12 @@ Rectangle {
                         implicitWidth:  ScreenTools.defaultFontPixelWidth * 4.5
                         implicitHeight: ScreenTools.defaultFontPixelHeight * 0.95
 
-                        property color lidColor: _activeVehicle && _activeVehicle.dock ?
-                                                     getLidColor(_activeVehicle.dock.ls5.rawValue, _activeVehicle.dock.ls6.rawValue) : "#7f8c8d"
+                        property color lidColor: getLidColor(_activeVehicle && _activeVehicle.dock ? _activeVehicle.dock.ls5.rawValue : 0,
+                                                             _activeVehicle && _activeVehicle.dock ? _activeVehicle.dock.ls6.rawValue : 0)
 
                         QGCLabel {
                             anchors.centerIn: parent
-                            text:             _activeVehicle && _activeVehicle.dock ?
+                            text:             _isOnline && _activeVehicle && _activeVehicle.dock ?
                                                   getLidText(_activeVehicle.dock.ls5.rawValue, _activeVehicle.dock.ls6.rawValue) : "N/A"
                             font.pointSize:   ScreenTools.smallFontPointSize - 2
                             font.bold:        true
@@ -524,7 +534,7 @@ Rectangle {
                         QGCLabel {
                             text:             modelData.fact ? (modelData.fact.valueString + "V") : "N/A"
                             font.pointSize:   ScreenTools.smallFontPointSize - 1
-                            color:            qgcPal.text
+                            color:            _isOnline ? qgcPal.text : qgcPal.textMuted
                         }
                     }
                 }

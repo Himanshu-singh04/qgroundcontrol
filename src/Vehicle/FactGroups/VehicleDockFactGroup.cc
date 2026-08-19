@@ -54,6 +54,9 @@ VehicleDockFactGroup::VehicleDockFactGroup(QObject *parent)
     _slot1VFact.setRawValue(qQNaN());
     _slot2VFact.setRawValue(qQNaN());
     _slotIFact.setRawValue(qQNaN());
+
+    connect(&_updateTimer, &QTimer::timeout, this, &VehicleDockFactGroup::_checkOnlineStatus);
+    _updateTimer.start(1000);
 }
 
 void VehicleDockFactGroup::handleMessage(Vehicle *vehicle, const mavlink_message_t &message)
@@ -139,5 +142,18 @@ void VehicleDockFactGroup::handleMessage(Vehicle *vehicle, const mavlink_message
 
     if (parsed) {
         _setTelemetryAvailable(true);
+        _lastReceivedTimer.start();
+        if (!_online) {
+            _online = true;
+            emit onlineChanged(true);
+        }
+    }
+}
+
+void VehicleDockFactGroup::_checkOnlineStatus()
+{
+    if (_online && _lastReceivedTimer.hasExpired(5000)) {
+        _online = false;
+        emit onlineChanged(false);
     }
 }
